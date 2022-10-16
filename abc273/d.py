@@ -1,5 +1,5 @@
 H, W, rs, cs = map(int, input().split())
-map = [['.'*W] for _ in range(H)]
+# map = [['.'*W] for _ in range(H)]
 N = int(input())
 rc = []
 for _ in range(N):
