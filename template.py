@@ -53,6 +53,7 @@ def eratosthenes(N: int) -> list:
 def modpow(a: int, b: int, m: int, lim: int) -> int:
     """ 
     繰り返し二乗法 O(logb)
+    a^b を mod で割った余りを出力
     lim : mod で割る数を2進数にした時の桁数 (10^3 ~ 2^10)
     """
     p = a
@@ -65,12 +66,29 @@ def modpow(a: int, b: int, m: int, lim: int) -> int:
         p %= m
     return ans
 
-def division(a: int, b: int, m, lim) -> int:
+def division(a: int, b: int, m, lim: int) -> int:
     """
     a÷b mod m を返す関数
     フェルマーの小定理を使う
     """
     return (a*modpow(b, m-2, m, lim))%m
+
+def binary_search(data: list, value: int) -> int:
+    """ 二分探索 """
+    left = 0
+    right = len(data) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if data[mid] == value:
+            # 中央の値と一致した場合は位置を返す
+            return mid
+        elif data[mid] < value:
+            # 中央の値より大きい場合は探索範囲の左を変える
+            left = mid + 1
+        else:
+            # 中央の値より小さい場合は探索範囲の右を変える
+            right = mid - 1
+    return -1
 
 class UnionFind:
     """ Union Find Tree """
@@ -103,7 +121,7 @@ class UnionFind:
         """ ノード数の取得 """
         return -self.parents[self.find(x)]
 
-### code ###
-N = int(input())
-a = list(map(int, input().split()))
-print(lcm_multi(a))
+### test code ###
+import bisect
+a = [3,8,11,18,27,31]
+print(bisect.bisect_left(a,5)) # 4
