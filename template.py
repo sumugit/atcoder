@@ -1,4 +1,6 @@
+from array import array
 import math
+import numpy as np
 
 def isprime(n: int) -> bool:
     """ 素数判定 """
@@ -89,6 +91,21 @@ def binary_search(data: list, value: int) -> int:
             # 中央の値より小さい場合は探索範囲の右を変える
             right = mid - 1
     return -1
+
+def matrix_power(A: np.array, n: int, mod: int, lim: int) -> np.array:
+    """ A^n を繰り返し二乗法で計算 """
+    P = A.copy()
+    Q = np.zeros(shape=(2,2))
+    flag = False
+    for i in range(lim):
+        if n & (1 << i) != 0:
+            if not flag:
+                Q = P.copy()
+                flag = True
+            else:
+                Q = (Q@P)%mod
+        P = (P@P)%mod
+    return Q
 
 class UnionFind:
     """ Union Find Tree """
