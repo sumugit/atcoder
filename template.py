@@ -75,7 +75,9 @@ def division(a: int, b: int, m, lim: int) -> int:
     return (a*modpow(b, m-2, m, lim))%m
 
 def binary_search(data: list, value: int) -> int:
-    """ 二分探索 """
+    """ 二分探索 
+    data は sort されている必要あり
+    """
     left = 0
     right = len(data) - 1
     while left <= right:
