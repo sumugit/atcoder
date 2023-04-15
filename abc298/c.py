@@ -14,19 +14,13 @@ for q in queries:
         box = q[2]
         boxes[int(box)-1].append(int(num))
         nums[int(num)-1].add(int(box))
-        # heapq.heappush(boxes[box], int(num))
-        # heapq.heappush(nums[num], int(box))
     elif label == '2':
         box = q[1]
         ans = sorted(boxes[int(box)-1])
         print(*ans)
-        # ans = boxes[box].copy()
-        # print(*[heapq.heappop(ans) for _ in range(len(ans))])
     elif label == '3':
         num = q[1]
         ans = sorted(nums[int(num)-1])
         print(*ans)
-        # ans = nums[num].copy()
-        # print(*set([heapq.heappop(ans) for _ in range(len(ans))]))
 
 
