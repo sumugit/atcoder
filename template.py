@@ -60,6 +60,7 @@ def modpow(a: int, b: int, m: int, lim: int) -> int:
     p = a
     ans = 1
     for i in range(lim):
+        # bを2進数に変換して, i 桁目が 1 かどうかを判定
         if b & (1 << i) != 0:
             ans *= p
             ans %= m
