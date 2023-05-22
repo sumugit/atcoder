@@ -109,6 +109,26 @@ def matrix_power(A: np.array, n: int, mod: int, lim: int) -> np.array:
         P = (P@P)%mod
     return Q
 
+def binary_search(data: list, value: int) -> int:
+    """ 二分探索 
+    data は sort されている必要あり
+    """
+    left = 0
+    right = len(data) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if data[mid] == value:
+            # 中央の値と一致した場合は位置を返す
+            return mid
+        elif data[mid] < value:
+            # 中央の値より大きい場合は探索範囲の左を変える
+            left = mid + 1
+        else:
+            # 中央の値より小さい場合は探索範囲の右を変える
+            right = mid - 1
+    return -1
+
+
 class UnionFind:
     """ Union Find Tree """
     def __init__(self, n):
@@ -140,7 +160,3 @@ class UnionFind:
         """ ノード数の取得 """
         return -self.parents[self.find(x)]
 
-### test code ###
-import bisect
-a = [3,8,11,18,27,31]
-print(bisect.bisect_left(a,5)) # 4
