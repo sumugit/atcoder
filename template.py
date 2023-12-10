@@ -9,14 +9,9 @@ def isprime(n: int) -> bool:
 
 def gcd(a: int, b: int) -> int:
     """ 2 数の最大公約数 : ユークリッドの互除法 """
-    while a >= 1 and b >= 1:
-        if a >= b:
-            a = a%b
-        else:
-            b = b%a
-    if a >= 1:
-        return a
-    return b
+    while b:
+        a, b = b, a % b
+    return a
 
 def gcd_multi(A: list) -> int:
     """ N (> 1) 個の最大公約数 """
@@ -27,8 +22,7 @@ def gcd_multi(A: list) -> int:
 
 def lcm(a: int, b: int) -> int:
     """ 2 数の最小公倍数 : gcd 利用 """
-    gcd_num = gcd(a, b)
-    return int((a*b)/gcd_num)
+    return a // gcd(a, b) * b
 
 def lcm_multi(A: list) -> int:
     """ N (> 1) 個の最小公倍数 """
