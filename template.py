@@ -127,6 +127,7 @@ def binary_search(data: list, value: int) -> int:
     return -1
 
 
+# グループ分け，最小全域木，最短経路問題
 class UnionFind:
     """ Union Find Tree """
     def __init__(self, n):
@@ -147,11 +148,14 @@ class UnionFind:
         y = self.find(y)
         if x == y:
             return
-        # 大きい集合に小さい集合を merge
+        # 頂点数が小さい親をy, 大きい親をxとなるようにマージする
+        # この実装では頂点数*(-1) のため、値が小さい方が頂点数が大きい
         if self.parents[x] > self.parents[y]:
             x, y = y, x
-
+        
+        # 小さいyの頂点数を大きいxの頂点数にマージ
         self.parents[x] += self.parents[y]
+        # 小さいyの親を大きいxにする
         self.parents[y] = x
 
     def size(self, x):
