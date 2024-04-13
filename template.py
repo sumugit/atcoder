@@ -126,6 +126,14 @@ def binary_search(data: list, value: int) -> int:
             right = mid - 1
     return -1
 
+def find_largest_power_of_2_leq_A(A):
+    """A 以下の最大の 2 のべき乗を求める"""
+    if A < 1:
+        return 0, -1
+    i = A.bit_length() - 1
+    largest_power_of_2 = 1 << i
+    return largest_power_of_2, i
+
 
 # グループ分け，最小全域木，最短経路問題
 class UnionFind:
