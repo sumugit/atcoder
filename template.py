@@ -5,6 +5,26 @@ from itertools import accumulate, product, permutations, combinations
 import math
 import numpy as np
 
+###############################################
+# Tips
+# 1. 2進数のビット演算
+# 2. グラフのDFS
+# 3. グラフのBFS
+# 4. グループ分け，最小全域木，最短経路問題
+# 5. 最大フロー
+# 6. セグメント木
+# 7. 二分探索
+# 8. 素数判定，最大公約数，最小公倍数
+# 9. エラトステネスの篩
+# 10. 繰り返し二乗法
+# 11. フェルマーの小定理
+# 12. 行列の累乗
+
+# bit反転は XOR で行うと良い
+# 2値表現できる状態は、bit演算で状態を変化させると良い
+
+
+
 def isprime(n: int) -> bool:
     """ 素数判定 """
     for i in range(2, int(math.sqrt(n)) + 1):
@@ -135,6 +155,61 @@ def find_largest_power_of_2_leq_A(A):
     return largest_power_of_2, i
 
 
+###############################################
+# グラフのDFS
+N, M = map(int, input().split())
+AB = [list(map(int, input().split())) for _ in range(M)]
+
+graph = defaultdict(lambda: [])
+for i in range(M):
+    graph[AB[i][0]].append(AB[i][1])
+    graph[AB[i][1]].append(AB[i][0])
+
+stack = deque()
+stack.append(1)
+visited = [False] * (N+1)
+visited[1] = True
+while len(stack) > 0:
+    v = stack.pop()
+    for next_v in graph[v]:
+        if not visited[next_v]:
+            visited[next_v] = True
+            stack.append(next_v)
+
+if all(visited[1:]):
+    print('The graph is connected.')
+else:
+    print('The graph is not connected.')
+
+###############################################
+# グラフのBFS
+N, M = map(int, input().split())
+AB = [list(map(int, input().split())) for _ in range(M)]
+
+graph = defaultdict(lambda: [])
+for i in range(M):
+    graph[AB[i][0]].append(AB[i][1])
+    graph[AB[i][1]].append(AB[i][0])
+
+queue = deque()
+queue.append((1, 0))
+visited = [False] * (N+1)
+visited[1] = True
+min_dis = [-1] * (N+1)
+min_dis[1] = 0
+while len(queue) > 0:
+    v, dis = queue.popleft()
+    for next_v in graph[v]:
+        if not visited[next_v]:
+            visited[next_v] = True
+            min_dis[next_v] = dis + 1
+            queue.append((next_v, dis+1))
+
+for i in range(1, N+1):
+    print(min_dis[i])
+
+
+###############################################
 # グループ分け，最小全域木，最短経路問題
 class UnionFind:
     """ Union Find Tree """
@@ -171,7 +246,7 @@ class UnionFind:
         return -self.parents[self.find(x)]
 
 
-
+###############################################
 def dijkstra(N: int, M: int, ABC: list) -> list:
     """ ダイクストラ法 """
     # 距離が最小の頂点から確定させていけば、絶対に最短経路が求まる
@@ -204,7 +279,7 @@ def dijkstra(N: int, M: int, ABC: list) -> list:
     return cur
 
 
-
+###############################################
 # セグメント木
 class segtree:
 	# 要素 dat の初期化を行う（最初は全部ゼロ）
@@ -234,3 +309,64 @@ class segtree:
 		answerl = self.query(l, r, a, m, u * 2) # 左の子
 		answerr = self.query(l, r, m, b, u * 2 + 1) # 右の子
 		return max(answerl, answerr)
+
+###############################################
+# 最大フロー
+# 最大フロー用の辺の構造体
+class maxflow_edge:
+	def __init__(self, to, cap, rev):
+		self.to = to   # 辺の行き先
+		self.cap = cap # 辺の容量 (容量は辺にかかる)
+		self.rev = rev # 逆辺の行き先
+        # rev については、行き先の頂点が連想配列の何番目に格納されているかを表す
+
+# 深さ優先探索 (Step1 -- Step3 を実行するには深さ優先である必要がある)
+# 理由: goal まで通るパスが1つ見つかれば良いため
+def dfs(pos, goal, F, G, used):
+    # Step 1 -- Step 3
+	if pos == goal:
+		return F # ゴールに到着：フローを流せる！
+	# 探索する
+	used[pos] = True
+	for e in G[pos]:
+		# 容量が 1 以上でかつ、まだ訪問していない頂点にのみ行く
+		if e.cap > 0 and not used[e.to]:
+            # 最大流量は min(F, e.cap)
+			flow = dfs(e.to, goal, min(F, e.cap), G, used)
+			# フローを流せる場合、残余グラフの容量を flow だけ増減させる
+			if flow >= 1:
+				e.cap -= flow
+				G[e.to][e.rev].cap += flow
+				return flow
+	# すべての辺を探索しても見つからなかった場合
+	return 0
+
+#  頂点 s から頂点 t までの最大フローの総流量を返す（頂点数 N、辺のリスト edges）
+def maxflow(N, s, t, edges):
+	# 初期状態の残余グラフを構築
+	# （ここは書籍とは少し異なる実装をしているため、8 行目は G[a] に追加された後なので len(G[a]) - 1 となっていることに注意）
+	G = [ list() for i in range(N + 1) ]
+	for a, b, c in edges:
+		G[a].append(maxflow_edge(b, c, len(G[b])))
+		G[b].append(maxflow_edge(a, 0, len(G[a]) - 1))
+	INF = 10 ** 10
+	total_flow = 0
+	while True:
+        # goal までに残量>0のみのパスがある限り繰り返す
+		used = [ False ] * (N + 1)
+        # Ford-Fulkerson 法の Step 1 -- Step3
+        # フォード・ファルカーソン法と読む
+		F = dfs(s, t, INF, G, used)
+		if F > 0:
+			total_flow += F
+		else:
+			break # フローを流せなくなったら、操作終了
+	return total_flow
+
+# 入力
+N, M = map(int, input().split())
+edges = [ list(map(int, input().split())) for i in range(M) ]
+
+# 答えを求めて出力
+answer = maxflow(N, 1, N, edges)
+print(answer)
