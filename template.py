@@ -114,6 +114,16 @@ def binary_search(data: list, value: int) -> int:
             right = mid - 1
     return -1
 
+""" bisectによる二分探索 
+data は sort されている必要あり
+"""
+# import bisect
+# a = [2, 3, 5, 7, 11, 13, 17, 19]
+# print(bisect.bisect_left(a, 11))
+# print(bisect.bisect_right(a, 11))
+# print(bisect.bisect(a, 11))
+# # 4, 5, 5
+
 def matrix_power(A: np.array, n: int, mod: int, lim: int) -> np.array:
     """ A^n を繰り返し二乗法で計算 """
     P = A.copy()
