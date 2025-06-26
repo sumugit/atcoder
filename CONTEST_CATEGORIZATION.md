@@ -14,4 +14,3 @@ This repository contains source code from past AtCoder contests. The following t
 | **Binary Search** | `tessoku/chapter3/A11.py` – uses `bisect` to find element position. |
 
 These categories are not exhaustive but provide a high-level organization of typical topics found in the solutions.
-
